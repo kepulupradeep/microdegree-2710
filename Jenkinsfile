@@ -34,3 +34,27 @@ pipeline {
         }
     }
 }
+
+
+
+pipeline {
+    agent any
+
+    stages{
+        stage('System Details'){
+            steps{
+                sh '''
+                date
+                hostname -I
+                lscpu
+                du -h
+                free -h
+                lsblk
+            '''
+            }
+        }        
+    }
+}
+
+
+
