@@ -57,4 +57,47 @@ pipeline {
 }
 
 
+#demo1
+
+pipeline {
+    agent {
+        label 'slave'
+    }
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
+
+#demo2
+
+
+
+#demo3
+pipeline {
+    agent {
+        label 'slave'
+    }
+    
+    parameters{
+        choice(
+            name: 'Branch Name',
+            choices:['dev', 'main', 'prod'],
+            description: 'Select Your Branch'
+            )
+    }
+    
+stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
+
 
