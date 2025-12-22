@@ -1,3 +1,5 @@
+#demo1
+
 pipeline {
     agent any
 
@@ -36,7 +38,7 @@ pipeline {
 }
 
 
-
+#demo2
 pipeline {
     agent any
 
@@ -57,6 +59,8 @@ pipeline {
 }
 
 
+
+
 #demo1
 
 pipeline {
@@ -75,6 +79,44 @@ pipeline {
 
 #demo2
 
+pipeline {
+    agent {
+        label 'slave'
+    }
+
+    stages{
+        stage('Server Date'){
+            steps{
+                sh 'date'
+            }
+        }
+        stage('IP Address'){
+            steps{
+                sh 'hostname -I'
+            }
+        }
+        stage('CPU Details'){
+            steps{
+                sh 'lscpu'
+            }
+        }
+        stage('Disk Usage'){
+            steps{
+                sh 'du -h'
+            }
+        }
+        stage('Memory Usage'){
+            steps{
+                sh 'free -h'
+            }
+        }
+        stage('Partition Details'){
+            steps{
+                sh 'lsblk'
+            }
+        }
+    }
+}
 
 
 #demo3
@@ -99,5 +141,6 @@ stages {
         }
     }
 }
+
 
 
