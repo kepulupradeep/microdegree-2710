@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools{
+        maven 'Maven-3.9'
+    }
+    
     environment {
         APP_NAME = "sample-app"
         DOCKER_IMAGE = "kepulupradeep/sample-app"
@@ -10,11 +14,9 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                dir('my-app') {
                 git branch: 'dev',
                     url: 'https://github.com/kepulupradeep/microdegree-2710.git'
             }
-        }
         }
 
         stage('Build') {
