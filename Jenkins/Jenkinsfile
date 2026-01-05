@@ -10,9 +10,11 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
+                dir('my-app') {
                 git branch: 'dev',
                     url: 'https://github.com/kepulupradeep/microdegree-2710.git'
             }
+        }
         }
 
         stage('Build') {
