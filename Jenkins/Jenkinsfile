@@ -1,6 +1,10 @@
 pipeline {
     agent any
-    
+
+    tools {
+        maven 'Maven-3.9'
+    }
+
     environment {
         APP_NAME = "sample-app"
         DOCKER_IMAGE = "kepulupradeep/sample-app"
@@ -15,32 +19,27 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                echo "Building application..."
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo "Running tests..."
-                sh 'mvn test'
+                sh 'mvn clean test package'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image..."
                 sh 'docker build -t $DOCKER_IMAGE:latest .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     sh '''
-                        echo $DOCKER_PASS | docker login -u your-dockerhub-username --password-stdin
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                         docker push $DOCKER_IMAGE:latest
                     '''
                 }
@@ -49,25 +48,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Deploying application..."
                 sh '''
                     docker stop sample-app || true
                     docker rm sample-app || true
                     docker run -d -p 8080:8080 --name sample-app $DOCKER_IMAGE:latest
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo "✅ CI/CD Pipeline executed successfully"
-        }
-        failure {
-            echo "❌ CI/CD Pipeline failed"
-        }
-        always {
-            echo "📌 Pipeline finished"
         }
     }
 }
